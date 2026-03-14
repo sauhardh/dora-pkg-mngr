@@ -9,6 +9,7 @@ mod list;
 mod logs;
 mod new;
 mod node;
+mod publish;
 mod run;
 mod runtime;
 mod self_;
@@ -34,6 +35,7 @@ use list::ListArgs;
 use logs::LogsArgs;
 use new::NewArgs;
 use node::Node;
+use publish::Publish;
 use runtime::Runtime;
 use self_::SelfSubCommand;
 use start::Start;
@@ -79,6 +81,7 @@ pub enum Command {
     Node(Node),
 
     Version(Version),
+    Publish(Publish),
 
     Completion(Completion),
     Self_ {
@@ -128,6 +131,7 @@ impl Executable for Command {
             Command::Node(args) => args.execute().await,
             Command::Version(args) => args.execute().await,
             Command::Completion(args) => args.execute().await,
+            Command::Publish(args) => args.execute().await,
         }
     }
 }

@@ -4,6 +4,7 @@ version = "0.0.1"
 language = "python"
 entrypoint = "obj_detection.py"
 checksum = ""
+author = ""
 
 [dependencies]
 webcam = ">=1.0.0"

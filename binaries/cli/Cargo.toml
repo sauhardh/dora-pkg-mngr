@@ -26,6 +26,7 @@ arrow-schema = { workspace = true }
 clap = { version = "4.0.3", features = ["derive", "string"] }
 clap_complete = "4.5.61"
 eyre = "0.6.8"
+dora-package-manager = { workspace = true }
 dora-core = { workspace = true, features = ["zenoh"] }
 dora-message = { workspace = true }
 dora-node-api-c = { workspace = true }
@@ -61,14 +62,14 @@ sysinfo = "0.36.1"
 
 env_logger = "0.11.3"
 self_update = { version = "0.42.0", features = [
-    "rustls",
-    "archive-zip",
-    "archive-tar",
-    "compression-flate2",
+  "rustls",
+  "archive-zip",
+  "archive-tar",
+  "compression-flate2",
 ], default-features = false }
 pyo3 = { workspace = true, features = [
-    "extension-module",
-    "abi3",
+  "extension-module",
+  "abi3",
 ], optional = true }
 self-replace = "1.5.0"
 dunce = "1.0.5"

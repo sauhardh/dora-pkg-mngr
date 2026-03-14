@@ -1,41 +1,42 @@
 [workspace]
 members = [
-    "apis/c/node",
-    "apis/c/operator",
-    "apis/c++/node",
-    "apis/c++/operator",
-    "apis/python/node",
-    "apis/python/operator",
-    "apis/rust/*",
-    "apis/rust/operator/macros",
-    "apis/rust/operator/types",
-    "binaries/cli",
-    "binaries/coordinator",
-    "binaries/daemon",
-    "binaries/runtime",
-    "examples/rust-dataflow/node",
-    "examples/rust-dataflow/status-node",
-    "examples/rust-dataflow/sink",
-    "examples/rust-dataflow/sink-dynamic",
-    "examples/ros2-bridge/rust/rust-ros2-example-node",
-    "examples/benchmark/node",
-    "examples/benchmark/sink",
-    "examples/multiple-daemons/node",
-    "examples/multiple-daemons/operator",
-    "examples/multiple-daemons/sink",
-    "examples/error-propagation/producer",
-    "examples/error-propagation/consumer",
-    "libraries/arrow-convert",
-    "libraries/communication-layer/*",
-    "libraries/core",
-    "libraries/message",
-    "libraries/shared-memory-server",
-    "libraries/extensions/download",
-    "libraries/extensions/telemetry/*",
-    "libraries/extensions/ros2-bridge",
-    "libraries/extensions/ros2-bridge/msg-gen",
-    "libraries/extensions/ros2-bridge/python",
-    "tests/queue_size_latest_data_rust/receive_data",
+  "apis/c/node",
+  "apis/c/operator",
+  "apis/c++/node",
+  "apis/c++/operator",
+  "apis/python/node",
+  "apis/python/operator",
+  "apis/rust/*",
+  "apis/rust/operator/macros",
+  "apis/rust/operator/types",
+  "binaries/cli",
+  "binaries/coordinator",
+  "binaries/daemon",
+  "binaries/runtime",
+  "examples/rust-dataflow/node",
+  "examples/rust-dataflow/status-node",
+  "examples/rust-dataflow/sink",
+  "examples/rust-dataflow/sink-dynamic",
+  "examples/ros2-bridge/rust/rust-ros2-example-node",
+  "examples/benchmark/node",
+  "examples/benchmark/sink",
+  "examples/multiple-daemons/node",
+  "examples/multiple-daemons/operator",
+  "examples/multiple-daemons/sink",
+  "examples/error-propagation/producer",
+  "examples/error-propagation/consumer",
+  "libraries/arrow-convert",
+  "libraries/communication-layer/*",
+  "libraries/core",
+  "libraries/message",
+  "libraries/shared-memory-server",
+  "libraries/extensions/download",
+  "libraries/extensions/telemetry/*",
+  "libraries/extensions/ros2-bridge",
+  "libraries/extensions/ros2-bridge/msg-gen",
+  "libraries/extensions/ros2-bridge/python",
+  "tests/queue_size_latest_data_rust/receive_data",
+  "libraries/dora-package-manager", "registry-server",
 ]
 
 [workspace.package]
@@ -72,6 +73,8 @@ dora-coordinator = { version = "0.4.1", path = "binaries/coordinator" }
 dora-ros2-bridge = { version = "0.4.1", path = "libraries/extensions/ros2-bridge" }
 dora-ros2-bridge-msg-gen = { version = "0.4.1", path = "libraries/extensions/ros2-bridge/msg-gen" }
 dora-ros2-bridge-python = { path = "libraries/extensions/ros2-bridge/python" }
+# new package manager 
+dora-package-manager = { version = "0.4.1", path = "libraries/dora-package-manager" }
 # versioned independently from the other dora crates
 # Stays at 0.7.0 for now to keep the rust-dataflow-git example working.
 # TODO: bump to 0.8.0 on the next dora release once downstream examples are updated.
@@ -83,9 +86,9 @@ arrow-array = { version = "54.2.1" }
 arrow-json = { version = "54.2.1" }
 parquet = { version = "54.2.1" }
 pyo3 = { version = "0.23", features = [
-    "eyre",
-    "abi3-py37",
-    "multiple-pymethods",
+  "eyre",
+  "abi3-py37",
+  "multiple-pymethods",
 ] }
 pythonize = "0.23"
 git2 = { version = "0.20.4", features = ["vendored-openssl"] }
