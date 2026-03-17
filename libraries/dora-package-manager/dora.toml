@@ -3,8 +3,8 @@ name = "node name"
 version = "0.0.1"
 language = "python"
 entrypoint = "obj_detection.py"
-checksum = ""
-author = ""
+checksum = "aha"
+author = "ahha"
 
 [dependencies]
 webcam = ">=1.0.0"

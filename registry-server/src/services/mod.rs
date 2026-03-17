@@ -1,2 +1,4 @@
-pub mod publish;
+mod db;
+mod publish;
 
+pub use publish::serve_publish;

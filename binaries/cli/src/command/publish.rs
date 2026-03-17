@@ -1,6 +1,6 @@
 use clap::Args;
+use dora_package_manager::package::Package;
 use dora_package_manager::registry_client::publish_artifacts;
-use dora_package_manager::{manifest, package::Package};
 
 use super::{Executable, default_tracing};
 
@@ -18,10 +18,10 @@ impl Executable for Publish {
         // 3) Filtering usable file only (follows .gitignore)
         // 4) Compress and archive it in .tar.gz
         // 5) Return path to archived_folder
-        let (artifacts_path, manifest) = pkg.build()?;
+        let artifacts_path = pkg.build()?;
 
-        let url: &str = "http://localhost:8000/api/publish";
-        let res = publish_artifacts(&artifacts_path, url, manifest).await?;
+        let url: &str = "http://127.0.0.1:7878/api/publish";
+        let res = publish_artifacts(&artifacts_path, url).await?;
 
         println!(" 📦 Successfully Published {:?}", artifacts_path);
         println!(" <!> Info: {:?}", res.text().await?);

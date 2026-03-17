@@ -1,0 +1,18 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        INSERT INTO versions (package_id, version, checksum, language, storage_path)\n        VALUES ($1,$2,$3,$4, $5)\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Text",
+        "Text",
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "f93c8657f4464506a55ebc50a5eef1f8584f3ad16d452c19b943b226539d6538"
+}

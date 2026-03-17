@@ -19,7 +19,7 @@ pub struct Package {
 }
 
 impl Manifest {
-    pub fn from_path(path: &Path) -> eyre::Result<Self> {
+    pub fn from_path(path: &Path) -> Result<Self, Box<dyn std::error::Error>> {
         let content = std::fs::read_to_string(path)?;
         let manifest: Manifest = toml::from_str(&content)?;
 

@@ -8,21 +8,9 @@ use eyre;
 use flate2::Compression;
 use flate2::write::GzEncoder;
 use ignore::Walk;
-use serde::Deserialize;
-use serde::Serialize;
 use tar::Builder;
 
-use crate::manifest;
 use crate::manifest::Manifest;
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct ManifestInfo {
-    pub name: String,
-    pub version: String,
-    pub owner: Option<String>,
-    pub dependencies: Option<HashMap<String, String>>,
-    pub checksum: String,
-}
 
 #[derive(Default)]
 pub struct Package {
@@ -59,19 +47,13 @@ impl Package {
         ))
     }
 
-    pub fn read_manifest(&self, path: &Path) -> eyre::Result<ManifestInfo> {
+    pub fn read_manifest(&self, path: &Path) -> eyre::Result<(String, String)> {
         let manifest_path = path.join(&self.manifest_file_name);
         let manifest = Manifest::from_path(&manifest_path)?;
 
         let package = manifest.package;
 
-        Ok(ManifestInfo {
-            name: package.name,
-            version: package.version,
-            owner: package.owner,
-            dependencies: manifest.dependencies,
-            checksum: package.checksum,
-        })
+        Ok((package.name, package.version))
     }
 
     pub fn collect_files(&self, path: &Path) -> eyre::Result<Vec<PathBuf>> {
@@ -99,6 +81,7 @@ impl Package {
         version: &str,
         files_collection: Vec<PathBuf>,
     ) -> eyre::Result<PathBuf> {
+        // TODO: Should we replace space?
         let name = name.replace(" ", "");
         let archive_name = format!("{}-{}.tar.gz", name, version);
         let archive_path = root.join(&archive_name);
@@ -116,24 +99,24 @@ impl Package {
         Ok(archive_path)
     }
 
-    pub fn build(&self) -> eyre::Result<(PathBuf, ManifestInfo)> {
+    pub fn build(&self) -> eyre::Result<PathBuf> {
         let root = self.find_project_root()?;
-        let manifest = self.read_manifest(&root)?;
+        let (manifest_name, manifest_version) = self.read_manifest(&root)?;
         let files_collection = self.collect_files(&root)?;
 
-        let artifacts_path =
-            self.archive(&root, &manifest.name, &manifest.version, files_collection)?;
+        let archived_path =
+            self.archive(&root, &manifest_name, &manifest_version, files_collection)?;
 
-        Ok((artifacts_path, manifest))
+        Ok(archived_path)
     }
 }
 
 #[cfg(test)]
-mod PackageTest {
+mod package_test {
     use super::*;
 
     #[test]
-    fn test_collect_files() {
+    fn _collect_files() {
         let pkg = Package::new();
         let path = pkg.find_project_root();
         println!("path {:?}", path);
@@ -143,7 +126,7 @@ mod PackageTest {
     }
 
     #[test]
-    fn test_build() {
+    fn _build() {
         let pkg = Package::new();
         let result = pkg.build();
         print!("path {:#?}", result);

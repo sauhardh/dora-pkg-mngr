@@ -10,8 +10,17 @@ license.workspace = true
 repository.workspace = true
 
 [dependencies]
+futures-util = "0.3.32"
 actix-web = "4"
 actix-cors = "0.7.1"
 env_logger = "0.11.8"
 log = "0.4.27"
 serde_json = "1.0.140"
+actix-multipart = "0.7.2"
+serde = { version = "1.0.228", features = ["derive"] }
+sqlx = { version = "0.8", features = ["runtime-tokio", "postgres", "macros"] }
+tokio = { version = "1", features = ["full"] }
+tar = "0.4"
+flate2 = "1.0"
+toml = "0.8"
+dotenv = "0.15.0"
