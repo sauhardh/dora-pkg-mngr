@@ -1,6 +1,6 @@
 use clap::Args;
 use dora_package_manager::package::Package;
-use dora_package_manager::registry_client::publish_artifacts;
+use dora_package_manager::registry::publish_artifacts;
 
 use super::{Executable, default_tracing};
 

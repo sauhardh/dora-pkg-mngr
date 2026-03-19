@@ -5,6 +5,8 @@ use std::path::Path;
 use std::path::PathBuf;
 
 use eyre;
+use eyre::Context;
+use eyre::bail;
 use flate2::Compression;
 use flate2::write::GzEncoder;
 use ignore::Walk;
@@ -50,7 +52,6 @@ impl Package {
     pub fn read_manifest(&self, path: &Path) -> eyre::Result<(String, String)> {
         let manifest_path = path.join(&self.manifest_file_name);
         let manifest = Manifest::from_path(&manifest_path)?;
-
         let package = manifest.package;
 
         Ok((package.name, package.version))
@@ -82,7 +83,13 @@ impl Package {
         files_collection: Vec<PathBuf>,
     ) -> eyre::Result<PathBuf> {
         // TODO: Should we replace space?
-        let name = name.replace(" ", "");
+        // let name = name.replace(" ", "");
+        let name = name.trim();
+
+        if name.contains(" ") {
+            bail!("Cannot have space in between name");
+        }
+
         let archive_name = format!("{}-{}.tar.gz", name, version);
         let archive_path = root.join(&archive_name);
 
@@ -95,6 +102,8 @@ impl Package {
             let archive_path = Path::new(&format!("{}-{}", name, version)).join(relative);
             tar.append_path_with_name(&file, archive_path)?;
         }
+
+        tar.finish().wrap_err("Failed to finalize archive")?;
 
         Ok(archive_path)
     }

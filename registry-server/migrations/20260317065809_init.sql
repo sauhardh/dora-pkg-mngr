@@ -2,7 +2,7 @@ CREATE TABLE packages(
   id SERIAL PRIMARY KEY,
   name TEXT NOT NULL UNIQUE,
   author TEXT,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE versions(
@@ -12,7 +12,7 @@ CREATE TABLE versions(
   checksum TEXT NOT NULL,
   language TEXT NOT NULL,
   storage_path TEXT NOT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   UNIQUE(package_id, version)
 );
 

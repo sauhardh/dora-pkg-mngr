@@ -1,5 +1,38 @@
 use crate::manifest::Package;
+use chrono::NaiveDateTime;
+use serde::Deserialize;
+use serde::Serialize;
 use sqlx::PgPool;
+use sqlx::Pool;
+use sqlx::Postgres;
+
+#[derive(Debug, Serialize, Deserialize)]
+#[allow(dead_code)]
+pub struct PackageVersion {
+    pub version: String,
+    pub created_at: NaiveDateTime,
+}
+
+pub async fn get_all_version(
+    name: String,
+    db: &Pool<Postgres>,
+) -> Result<Vec<PackageVersion>, sqlx::Error> {
+    let versions: Vec<PackageVersion> = sqlx::query_as!(
+        PackageVersion,
+        r#"
+        SELECT v.version, v.created_at
+        FROM packages p
+        JOIN versions v ON p.id = v.package_id
+        WHERE p.name = $1
+        ORDER BY v.created_at DESC
+        "#,
+        name
+    )
+    .fetch_all(db)
+    .await?;
+
+    Ok(versions)
+}
 
 pub async fn store_manifest_in_db(
     db: &PgPool,

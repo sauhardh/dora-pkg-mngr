@@ -5,6 +5,7 @@ mod daemon;
 mod destroy;
 mod graph;
 mod inspect;
+mod install;
 mod list;
 mod logs;
 mod new;
@@ -31,6 +32,7 @@ use destroy::Destroy;
 use eyre::Context;
 use graph::Graph;
 use inspect::Inspect;
+use install::Install;
 use list::ListArgs;
 use logs::LogsArgs;
 use new::NewArgs;
@@ -79,9 +81,9 @@ pub enum Command {
     Topic(Topic),
     #[clap(subcommand)]
     Node(Node),
-
     Version(Version),
     Publish(Publish),
+    Install(Install),
 
     Completion(Completion),
     Self_ {
@@ -132,6 +134,7 @@ impl Executable for Command {
             Command::Version(args) => args.execute().await,
             Command::Completion(args) => args.execute().await,
             Command::Publish(args) => args.execute().await,
+            Command::Install(args) => args.execute().await,
         }
     }
 }

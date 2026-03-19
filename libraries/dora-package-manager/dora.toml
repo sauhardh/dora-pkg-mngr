@@ -1,6 +1,6 @@
 [package]
-name = "node name"
-version = "0.0.1"
+name = "nodename"
+version = "0.0.4"
 language = "python"
 entrypoint = "obj_detection.py"
 checksum = "aha"

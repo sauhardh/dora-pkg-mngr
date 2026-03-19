@@ -13,6 +13,9 @@ use sqlx::PgPool;
 use sqlx::Pool;
 use sqlx::Postgres;
 
+use crate::services::download_package;
+use crate::services::download_specific_package;
+use crate::services::get_packages;
 use crate::services::serve_publish;
 
 pub mod manifest;
@@ -52,7 +55,14 @@ async fn main() -> std::io::Result<()> {
             .app_data(web::Data::new(db.clone()))
             .wrap(cors)
             .wrap(Logger::default())
-            .service(web::scope("/api").service(health).service(serve_publish))
+            .service(
+                web::scope("/api")
+                    .service(health)
+                    .service(serve_publish)
+                    .service(download_package)
+                    .service(download_specific_package)
+                    .service(get_packages),
+            )
     })
     .workers(3)
     .bind(("127.0.0.1", PORT))?

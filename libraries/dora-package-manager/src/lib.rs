@@ -1,3 +1,3 @@
 pub mod manifest;
 pub mod package;
-pub mod registry_client;
+pub mod registry;

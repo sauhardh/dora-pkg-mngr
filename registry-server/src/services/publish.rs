@@ -1,3 +1,4 @@
+//! When user publish their's package to registry server
 use std::fs::File;
 use std::io::Read;
 use std::io::Write;
@@ -17,10 +18,12 @@ use tar::Archive;
 
 use crate::manifest::Manifest;
 use crate::manifest::Package;
-use crate::services::db::store_manifest_in_db;
+use crate::services::store_manifest_in_db;
 
 #[inline]
 fn create_dir_if_not_exist() -> Result<String, Box<dyn std::error::Error>> {
+    // TODO: Should be absolute path
+    // However, in production, we may use cloud storage
     let storage_dir = "./storage";
     std::fs::create_dir_all(storage_dir)?;
 
