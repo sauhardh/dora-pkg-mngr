@@ -98,8 +98,8 @@ impl Package {
         let mut tar = Builder::new(encoder);
 
         for file in files_collection {
-            let relative = file.strip_prefix(&root)?;
-            let archive_path = Path::new(&format!("{}-{}", name, version)).join(relative);
+            let relative = file.strip_prefix(root)?;
+            let archive_path = Path::new(name).join(relative);
             tar.append_path_with_name(&file, archive_path)?;
         }
 

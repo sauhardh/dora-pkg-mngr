@@ -1,4 +1,8 @@
 use std::fs;
+use std::fs::File;
+use std::io::Bytes;
+use std::io::Write;
+use std::os::unix::process;
 use std::path::Path;
 use std::path::PathBuf;
 
@@ -8,30 +12,7 @@ use flate2::read::GzDecoder;
 use reqwest::Client;
 use reqwest::Response;
 use tar::Archive;
-
-pub async fn get_versions(url: &str) -> eyre::Result<Response> {
-    let client = Client::builder()
-        .timeout(std::time::Duration::from_secs(30))
-        .build()?;
-
-    let res = client.get(url.trim()).send().await?;
-
-    if !res.status().is_success() {
-        let status = res.status();
-        let body = res
-            .text()
-            .await
-            .unwrap_or_else(|_| "<Failed to read body>".to_string());
-
-        return Err(eyre::eyre!(
-            "Failed to get versions for requested package \n status: {}. \n  Reason: {:?}",
-            status,
-            body
-        ));
-    }
-
-    Ok(res)
-}
+use tokio::io::AsyncWriteExt;
 
 #[derive(Debug, Default)]
 pub struct RegistryDownload {
@@ -67,12 +48,22 @@ impl RegistryDownload {
         Ok(versions)
     }
 
-    pub async fn download(&self, url: &str, dest: &PathBuf) -> eyre::Result<()> {
-        self.fetch_and_save(url, dest).await
+    pub async fn download(
+        &self,
+        url: &str,
+        dest: &PathBuf,
+        progress: Option<Box<dyn Fn(u64, u64) + Send + Sync>>,
+    ) -> eyre::Result<()> {
+        self.fetch_and_save(url, dest, progress).await
     }
 
-    pub async fn fetch_and_save(&self, url: &str, dest: &PathBuf) -> eyre::Result<()> {
-        let res = self
+    pub async fn fetch_and_save(
+        &self,
+        url: &str,
+        dest: &PathBuf,
+        progress: Option<Box<dyn Fn(u64, u64) + Send + Sync>>,
+    ) -> eyre::Result<()> {
+        let mut res = self
             .client
             .get(url.trim())
             .send()
@@ -91,13 +82,27 @@ impl RegistryDownload {
             .and_then(|v| v.to_str().ok())
             .map(|v| v.to_string());
 
-        let bytes = res
-            .bytes()
-            .await
-            .wrap_err("Failed to read response bytes")?;
+        // let bytes = res
+        //     .bytes()
+        //     .await
+        //     .wrap_err("Failed to read response bytes")?;
 
+        let total_size = res.content_length().unwrap_or(0);
+        let mut downloaded = 0;
+
+        let mut file = tokio::fs::File::create(dest).await?;
+        while let Some(chunk) = res.chunk().await? {
+            file.write_all(&chunk).await?;
+
+            if let Some(ref p) = progress {
+                downloaded += chunk.len() as u64;
+                p(downloaded, total_size);
+            }
+        }
+
+        // TODO: CHECKSUM
         if let Some(expected) = expected_checksum {
-            let actual = sha256_hex(&bytes);
+            // let actual = sha256_hex(&bytes);
             // if actual != expected {
             //     bail!(
             //         "Checksum mismatch! expected: {} but got {}",
@@ -107,9 +112,11 @@ impl RegistryDownload {
             // }
         }
 
-        tokio::fs::write(dest, &bytes)
-            .await
-            .wrap_err_with(|| format!("Failed to write package to {:?}", dest))?;
+        // tokio::fs::write(dest, &bytes)
+        //     .await
+        //     .wrap_err_with(|| format!("Failed to write package to {:?}", dest))?;
+
+        file.flush().await?;
 
         Ok(())
     }
