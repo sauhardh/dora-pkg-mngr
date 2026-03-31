@@ -82,7 +82,7 @@ impl Package {
         version: &str,
         files_collection: Vec<PathBuf>,
     ) -> eyre::Result<PathBuf> {
-        // TODO: Should we replace space?
+        // Should we replace space?, right now, space in nodename is not allowed
         // let name = name.replace(" ", "");
         let name = name.trim();
 

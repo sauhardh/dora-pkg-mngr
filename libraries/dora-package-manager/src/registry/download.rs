@@ -1,9 +1,4 @@
 use std::fs;
-use std::fs::File;
-use std::io::Bytes;
-use std::io::Write;
-use std::os::unix::process;
-use std::path::Path;
 use std::path::PathBuf;
 
 use eyre::Context;
@@ -82,12 +77,9 @@ impl RegistryDownload {
             .and_then(|v| v.to_str().ok())
             .map(|v| v.to_string());
 
-        // let bytes = res
-        //     .bytes()
-        //     .await
-        //     .wrap_err("Failed to read response bytes")?;
-
         let total_size = res.content_length().unwrap_or(0);
+        println!("Total size:  {}", total_size);
+
         let mut downloaded = 0;
 
         let mut file = tokio::fs::File::create(dest).await?;
@@ -102,19 +94,15 @@ impl RegistryDownload {
 
         // TODO: CHECKSUM
         if let Some(expected) = expected_checksum {
-            // let actual = sha256_hex(&bytes);
-            // if actual != expected {
-            //     bail!(
-            //         "Checksum mismatch! expected: {} but got {}",
-            //         expected,
-            //         actual
-            //     );
-            // }
+            let actual = calculate_checksum(dest)?;
+            println!("Calculated checksum {}", actual);
+            if actual != expected {
+                // Usually these file are stored in cloud.
+                // Just managing this at local level for demo
+                tokio::fs::remove_dir_all(dest).await?;
+                bail!("Checksum mismatch! got {}.", actual);
+            }
         }
-
-        // tokio::fs::write(dest, &bytes)
-        //     .await
-        //     .wrap_err_with(|| format!("Failed to write package to {:?}", dest))?;
 
         file.flush().await?;
 
@@ -122,10 +110,11 @@ impl RegistryDownload {
     }
 }
 
-fn sha256_hex(data: &[u8]) -> String {
+fn calculate_checksum(dest: &PathBuf) -> eyre::Result<String> {
     use sha2::{Digest, Sha256};
+    let data = std::fs::read(dest)?;
     let hash = Sha256::digest(data);
-    hex::encode(hash)
+    Ok(hex::encode(hash))
 }
 
 pub fn extract_package(archive_path: &PathBuf, dest: &PathBuf) -> eyre::Result<PathBuf> {

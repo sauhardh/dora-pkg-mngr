@@ -15,7 +15,6 @@ pub struct Package {
     pub version: String,
     pub language: String,
     pub entrypoint: String,
-    pub checksum: String,
 }
 
 impl Manifest {

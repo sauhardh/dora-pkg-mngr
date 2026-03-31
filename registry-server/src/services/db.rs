@@ -38,6 +38,7 @@ pub async fn store_manifest_in_db(
     db: &PgPool,
     pkg: Package,
     storage_path: String,
+    checksum: String,
 ) -> Result<(), sqlx::Error> {
     let package_id: i32 = sqlx::query_scalar!(
         r#"
@@ -60,7 +61,7 @@ pub async fn store_manifest_in_db(
         "#,
         package_id,
         pkg.version,
-        pkg.checksum,
+        checksum,
         pkg.language,
         storage_path
     )

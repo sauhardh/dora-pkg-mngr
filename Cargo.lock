@@ -1121,6 +1121,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "console"
+version = "0.16.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d64e8af5551369d19cf50138de61f1c42074ab970f74e99be916646777f8fc87"
+dependencies = [
+ "encode_unicode",
+ "libc",
+ "unicode-width 0.2.0",
+ "windows-sys 0.61.2",
+]
+
+[[package]]
 name = "const-oid"
 version = "0.9.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1848,6 +1860,7 @@ dependencies = [
  "eyre",
  "futures",
  "git2",
+ "indicatif 0.18.4",
  "inquire 0.5.3",
  "itertools 0.14.0",
  "log",
@@ -2180,6 +2193,7 @@ dependencies = [
 name = "dora-package-manager"
 version = "0.4.1"
 dependencies = [
+ "colored 3.1.1",
  "eyre",
  "flate2",
  "hex",
@@ -3528,10 +3542,23 @@ version = "0.17.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "183b3088984b400f4cfac3620d5e076c84da5364016b4f49473de574b2586235"
 dependencies = [
- "console",
+ "console 0.15.11",
  "number_prefix",
  "portable-atomic",
  "unicode-width 0.2.0",
+ "web-time",
+]
+
+[[package]]
+name = "indicatif"
+version = "0.18.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "25470f23803092da7d239834776d653104d551bc4d7eacaf31e6837854b8e9eb"
+dependencies = [
+ "console 0.16.3",
+ "portable-atomic",
+ "unicode-width 0.2.0",
+ "unit-prefix",
  "web-time",
 ]
 
@@ -3596,7 +3623,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0fddf93031af70e75410a2511ec04d49e758ed2f26dad3404a934e0fb45cc12a"
 dependencies = [
  "bitflags 2.11.0",
- "console",
+ "console 0.15.11",
  "dyn-clone",
  "fxhash",
  "newline-converter 0.3.0",
@@ -5748,9 +5775,11 @@ dependencies = [
  "env_logger",
  "flate2",
  "futures-util",
+ "hex",
  "log",
  "serde",
  "serde_json",
+ "sha2",
  "sqlx",
  "tar",
  "tokio",
@@ -6341,7 +6370,7 @@ dependencies = [
  "either",
  "flate2",
  "hyper 1.8.1",
- "indicatif",
+ "indicatif 0.17.11",
  "log",
  "quick-xml 0.37.5",
  "regex",
@@ -7964,6 +7993,12 @@ checksum = "3e130f2ed46ca5d8ec13c7ff95836827f92f5f5f37fd2b2bf16f33c408d98bb6"
 dependencies = [
  "extension-traits",
 ]
+
+[[package]]
+name = "unit-prefix"
+version = "0.5.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "81e544489bf3d8ef66c953931f56617f423cd4b5494be343d9b9d3dda037b9a3"
 
 [[package]]
 name = "unsafe-libyaml"

@@ -1,0 +1,9 @@
+[package]
+name = "send_data"
+version = "0.0.1"
+language = "python"
+entrypoint = "send_data.py"
+author = "sauhardha"
+
+[dependencies]
+webcam = ">=1.0.0"

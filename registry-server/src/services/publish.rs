@@ -19,6 +19,7 @@ use tar::Archive;
 use crate::manifest::Manifest;
 use crate::manifest::Package;
 use crate::services::store_manifest_in_db;
+use crate::utils::hash::calculate_checksum;
 
 #[inline]
 fn create_dir_if_not_exist() -> Result<String, Box<dyn std::error::Error>> {
@@ -139,7 +140,10 @@ pub async fn serve_publish(
     let content = extract_manifest_from_tar(&archive_path)?;
     let manifest = parse_manifest_str(&content)?;
 
-    store_manifest_in_db(&db, manifest, archive_path)
+    let checksum = calculate_checksum(archive_path.as_str())?;
+    println!("Checksum: {}", checksum);
+
+    store_manifest_in_db(&db, manifest, archive_path, checksum)
         .await
         .map_err(|e| actix_web::error::ErrorInternalServerError(format!("DB error: {}", e)))?;
 

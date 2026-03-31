@@ -1,6 +1,10 @@
+use std::time::Duration;
+
 use clap::Args;
+use colored::Colorize;
 use dora_package_manager::package::Package;
 use dora_package_manager::registry::publish_artifacts;
+use serde::{Deserialize, Serialize};
 
 use super::{Executable, default_tracing};
 
@@ -10,6 +14,7 @@ pub struct Publish {}
 impl Executable for Publish {
     async fn execute(self) -> eyre::Result<()> {
         default_tracing()?;
+        println!("\n {} ", "Initializing...".cyan().bold());
 
         let pkg = Package::new();
         // Handles
@@ -20,12 +25,26 @@ impl Executable for Publish {
         // 5) Return path to archived_folder
         let artifacts_path = pkg.build()?;
 
+        let pb = indicatif::ProgressBar::new_spinner();
+        pb.enable_steady_tick(Duration::from_millis(100));
+        pb.set_message("Publishing artifacts...");
+
         let url: &str = "http://127.0.0.1:7878/api/publish";
         let res = publish_artifacts(&artifacts_path, url).await?;
+        pb.finish();
 
-        println!(" 📦 Successfully Published {:?}", artifacts_path);
-        println!(" <!> Info: {:?}", res.text().await?);
+        println!(
+            "⏳ Info: Your Artifacts has been {}",
+            res.json::<Response>().await?.message.cyan()
+        );
+        println!(" 📦 {}", "Successfully Published!".green().bold());
 
         Ok(())
     }
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+struct Response {
+    message: String,
+    status: String,
 }

@@ -1,0 +1,10 @@
+
+[package]
+name = "receive_data"
+version = "0.0.4"
+language = "python"
+entrypoint = "receive_data.py"
+author = "sauhardha"
+
+[dependencies]
+webcam = ">=1.0.0"

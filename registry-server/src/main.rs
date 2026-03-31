@@ -17,9 +17,11 @@ use crate::services::download_package;
 use crate::services::download_specific_package;
 use crate::services::get_packages;
 use crate::services::serve_publish;
+use crate::utils::hash;
 
 pub mod manifest;
 pub mod services;
+pub mod utils;
 
 #[get("")]
 async fn health() -> impl Responder {
